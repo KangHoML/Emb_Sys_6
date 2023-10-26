@@ -1,0 +1,1 @@
+cmd_/home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.mod := { echo  /home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.o;  echo; } > /home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.mod
