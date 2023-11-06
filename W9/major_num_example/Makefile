@@ -1,4 +1,4 @@
-obj-m += gpio_driver.o
+obj-m += dev_nr.o
 KDIR = ~/workspace/Emb_sys/kernel
 RESULT = major_num_example
 SRC = $(RESULT).c
