@@ -1,1 +1,0 @@
-cmd_/home/ho/workspace/Emb_sys/W9/major_num_example/modules.order := {   echo /home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.ko; :; } | awk '!x[$$0]++' - > /home/ho/workspace/Emb_sys/W9/major_num_example/modules.order

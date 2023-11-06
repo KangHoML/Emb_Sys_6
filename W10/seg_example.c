@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-int main(int arg, char **argv){
+int main(int argc, char **argv){
 	
 	short buff;
 

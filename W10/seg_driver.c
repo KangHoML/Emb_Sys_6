@@ -6,31 +6,33 @@
 #include <linux/gpio.h>
 
 /* Meta Information */
-MODULE_LICENSE('GPL');
-MODULE_AUTHOR('Group6 GNU/Linux');
-MODULE_DESCRIPTION('A simple gpio driver for segments');
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Group6 4 GNU/Linux");
+MODULE_DESCRIPTION("A simple gpio driver for segments");
 
 /* Variables for device and device class */
 static dev_t my_device_nr;
 static struct class *my_class;
 static struct cdev my_device;
 
-#define DRIVER_NAME 'my_segment'
-#define DRIVER_CLASS 'MyModuleClass_seg'
+#define DRIVER_NAME "my_segment"
+#define DRIVER_CLASS "MyModuleClass_seg"
 
-/* Write data to bufffer */
+/**
+ * @brief Write data to buffer
+ */
 static ssize_t driver_write(struct file *File, const char *user_buffer, size_t count, loff_t *offs) {
-    int to_copy, not_copied, delta;
-    unsigned short value = 0;
+	int to_copy, not_copied, delta;
+	unsigned short value = 0;
 
-    // Get amount of data to copy
-    to_copy = min(count, sizeof(value));
+	/* Get amount of data to copy */
+	to_copy = min(count, sizeof(value));
 
-    // Copy data to user
-    not_copied = copy_from_user(&value, user_buffer, to_copy);
+	/* Copy data to user */
+	not_copied = copy_from_user(&value, user_buffer, to_copy);
 
-    // Setting Segments LED
-    if(value & (1 << 0)){
+	/* Setting the segments LED */
+	if(value & (1 << 0)){
 		gpio_set_value(2, 1);
 	}
 	else{
@@ -114,40 +116,49 @@ static ssize_t driver_write(struct file *File, const char *user_buffer, size_t c
 		gpio_set_value(24, 0);
 	}
 
-    // Calculate data
-    delta = to_copy - not_copied;
-    return delta;
+	/* Calculate data */
+	delta = to_copy - not_copied;
+	return delta;
 }
 
-/* Open Device */
+/**
+ * @brief This function is called, when the device file is opened
+ */
 static int driver_open(struct inode *device_file, struct file *instance) {
-    printk('segment - open was called\n');
-    return 0;
+	printk("segment - open was called!\n");
+	return 0;
 }
 
-/* Close Device*/
+/**
+ * @brief This function is called, when the device file is opened
+ */
 static int driver_close(struct inode *device_file, struct file *instance) {
-    printk('segment - close was called\n');
-    return 0;
+	printk("segment - close was called!\n");
+	return 0;
 }
 
 static struct file_operations fops = {
-    .owner = THIS_MODULE,
-    .open = driver_open,
-    .release = driver_close,
-    .write = driver_write
+	.owner = THIS_MODULE,
+	.open = driver_open,
+	.release = driver_close,
+	//.read = driver_read,
+	.write = driver_write
 };
 
+/**
+ * @brief This function is called, when the module is loaded into the kernel
+ */
 static int __init ModuleInit(void) {
-    printk("Hello, Kernel!\n");
+	printk("Hello, Kernel!\n");
 
-    if alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME < 0) {
-        printk('Device Nr. could not be allocated!\n');
-        return -1;
-    }
-    printk('read_write - Device Nr. Major: %d, Minor: %d was registered!\n', my_device_nr >> 20, my_device_nr && 0xfffff)
+	/* Allocate a device nr */
+	if( alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0) {
+		printk("Device Nr. could not be allocated!\n");
+		return -1;
+	}
+	printk("read_write - Device Nr. Major: %d, Minor: %d was registered!\n", my_device_nr >> 20, my_device_nr && 0xfffff);
 
-    /* Create device class */
+	/* Create device class */
 	if((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
 		printk("Device class can not e created!\n");
 		goto ClassError;
@@ -159,16 +170,17 @@ static int __init ModuleInit(void) {
 		goto FileError;
 	}
 
-    /* Initialize device file */
+	/* Initialize device file */
 	cdev_init(&my_device, &fops);
 
-    /* Regisering device to kernel */
+	/* Regisering device to kernel */
 	if(cdev_add(&my_device, my_device_nr, 1) == -1) {
 		printk("Registering of device to kernel failed!\n");
 		goto AddError;
 	}
 
-    /* GPIO 2 init */
+	/* Set D1~4 segments GPIO */
+	/* GPIO 2 init */
 	if(gpio_request(2, "rpi-gpio-2")) {
 		printk("Can not allocate GPIO 2\n");
 		goto AddError;
@@ -338,7 +350,9 @@ ClassError:
 	return -1;
 }
 
-/* removed from the kernel */
+/**
+ * @brief This function is called, when the module is removed from the kernel
+ */
 static void __exit ModuleExit(void) {
 	gpio_set_value(2, 0);
 	gpio_set_value(3, 0);
@@ -373,3 +387,5 @@ static void __exit ModuleExit(void) {
 
 module_init(ModuleInit);
 module_exit(ModuleExit);
+
+
