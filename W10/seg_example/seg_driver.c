@@ -7,7 +7,7 @@
 
 /* Meta Information */
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Group6 4 GNU/Linux");
+MODULE_AUTHOR("Emb_Sys_6 GNU/Linux");
 MODULE_DESCRIPTION("A simple gpio driver for segments");
 
 /* Variables for device and device class */

@@ -19,7 +19,7 @@ int main(int argc, char **argv){
 		printf("Opening was not possible!\n");
 		return -1;
 	}
-	printf("Opening was not possible!\n");
+	printf("Opening was successful!\n");
 
 	if(argv[1][0] == '0' && (argv[1][1] == 'x' || argv[1][1] == 'x'))
 		buff = (unsigned short)strtol(&argv[1][2], NULL, 16);
