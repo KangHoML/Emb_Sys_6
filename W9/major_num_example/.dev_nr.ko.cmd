@@ -1,0 +1,1 @@
+cmd_/home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.ko := aarch64-linux-gnu-ld -r  -EL  -maarch64elf -z noexecstack   --build-id=sha1  -T scripts/module.lds -o /home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.ko /home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.o /home/ho/workspace/Emb_sys/W9/major_num_example/dev_nr.mod.o;  true

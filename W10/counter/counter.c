@@ -3,10 +3,66 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdbool.h>
+#include <termios.h>
+
+static struct termios init_setting, new_setting;
+char seg_num[10] = {0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xd8, 0x80, 0x90};
+char seg_dnum[10] = {0x40, 0x79, 0x24, 0x30, 0x19, 0x12, 0x02, 0x58, 0x00, 0x10};
+
+#define D1 0x01
+#define D2 0x02
+#define D3 0x04
+#define D4 0x08
+
+void init_keyboard()
+{
+	tcgetattr(STDIN_FILENO, &init_setting);
+	new_setting = init_setting;
+	new_setting.c_lflag &= ~ICANON;
+	new_setting.c_lflag &= ~ECHO;
+	new_setting.c_cc[VMIN] = 0;
+	new_setting.c_cc[VTIME] = 0;
+	tcsetattr(0, TCSANOW, &new_setting);
+}
+
+void close_keyboard()
+{
+	tcsetattr(0, TCSANOW, &init_setting);
+}
+
+char get_key()
+{
+	char ch = -1;
+
+	if(read(STDIN_FILENO, &ch, 1) != 1)
+		ch = -1;
+	return ch;
+}
+
+void print_menu()
+{
+	printf("\n----------menu----------\n");
+    printf("[u] : count up\n");
+    printf("[d] : count down\n");
+	printf("[p] : set counter\n");
+	printf("[q] : program exit\n");
+	printf("------------------------\n\n");
+}
+
+void print_seg(unsigned short *data, int count) {
+    int index0 = count / 1000;
+    int index1 = (count % 1000) / 100;
+    int index2 = (count % 100) / 10;
+    int index3 = (count % 100) % 10;
+
+    data[0] = (seg_num[index0] << 4) | D1;
+    data[1] = (seg_num[index1] << 4) | D2;
+	data[2] = (seg_num[index2] << 4) | D3;
+	data[3] = (seg_num[index3] << 4) | D4;
+}
 
 int main(int argc, char **argv) {
-    bool state = true;
+    int state = 1;
 
     // variable values for reading button
     int button_dev = open("/dev/my_button", O_RDONLY);
@@ -14,10 +70,8 @@ int main(int argc, char **argv) {
     char prev[2] = {'r', 'r'};
     
     // variable values for writing segment
-    char command;
-    unsigned short count = 0;
     int seg_dev = open("/dev/my_segment", O_WRONLY);
-
+    
     // Verify to state of device opened
     if(button_dev == -1) {
         printf("Opening button device was not possible!\n");
@@ -31,8 +85,16 @@ int main(int argc, char **argv) {
     }
     printf("Openig segment device was successful!\n");
 
-    // counter
-    while(state) {
+    // initialize the setting
+    init_keyboard();
+    print_menu();
+    unsigned short data[4];
+    char command;
+    int count = 0;
+    int delay_time = 1000;
+    
+    while(state == 1) {
+        command = get_key();
         switch(command) {
             case 'u':
                 count = (count + 1) % 10000;
@@ -42,11 +104,11 @@ int main(int argc, char **argv) {
                 break;
             case 'p':
                 printf("input of couter value: ");
-                scanf("%hu", &count);
+                scanf("%d", &count);
                 count %= 10000;
                 break;
             case 'q':
-                state = false;
+                state = 0;
                 break;
         }
 
@@ -66,9 +128,12 @@ int main(int argc, char **argv) {
         }
         prev[1] = buff[1];
 
-        write(seg_dev, &count, sizeof(count));
+        print_seg(data, count);
+        write(seg_dev, &data, sizeof(data));
+        usleep(delay_time);
     }
 
+    close_keyboard();
     close(button_dev);
     close(seg_dev);
     return 0;

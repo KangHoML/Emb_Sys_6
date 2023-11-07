@@ -7,7 +7,7 @@
 
 /* Meta Information */
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Johannes 4 GNU/Linux");
+MODULE_AUTHOR("Emb_Sys_6 4 GNU/Linux");
 MODULE_DESCRIPTION("A simple gpio driver for setting a LED and reading a button");
 
 /* Variables for device and device class */
@@ -92,7 +92,7 @@ static int __init ModuleInit(void) {
 	printk("Hello, Kernel!\n");
 
 	/* Allocate a device nr */
-	if( alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0) {
+	if(alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0) {
 		printk("Device Nr. could not be allocated!\n");
 		return -1;
 	}

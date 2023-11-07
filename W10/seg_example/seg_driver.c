@@ -16,7 +16,7 @@ static struct class *my_class;
 static struct cdev my_device;
 
 #define DRIVER_NAME "my_segment"
-#define DRIVER_CLASS "MyModuleClass_seg"
+#define DRIVER_CLASS "SegmentModuleClass"
 
 /**
  * @brief Write data to buffer
@@ -141,7 +141,6 @@ static struct file_operations fops = {
 	.owner = THIS_MODULE,
 	.open = driver_open,
 	.release = driver_close,
-	//.read = driver_read,
 	.write = driver_write
 };
 

@@ -1,0 +1,1 @@
+cmd_/home/ho/workspace/Emb_sys/W10/seg_example/seg_driver.ko := aarch64-linux-gnu-ld -r  -EL  -maarch64elf -z noexecstack   --build-id=sha1  -T scripts/module.lds -o /home/ho/workspace/Emb_sys/W10/seg_example/seg_driver.ko /home/ho/workspace/Emb_sys/W10/seg_example/seg_driver.o /home/ho/workspace/Emb_sys/W10/seg_example/seg_driver.mod.o;  true

@@ -1,0 +1,1 @@
+cmd_/home/ho/workspace/Emb_sys/W10/counter/modules.order := {   echo /home/ho/workspace/Emb_sys/W10/counter/seg_driver.ko;   echo /home/ho/workspace/Emb_sys/W10/counter/button_driver.ko; :; } | awk '!x[$$0]++' - > /home/ho/workspace/Emb_sys/W10/counter/modules.order

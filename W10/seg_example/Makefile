@@ -3,7 +3,7 @@ KDIR = ~/workspace/Emb_sys/kernel
 RESULT = seg_example
 SRC = $(RESULT).c
 RESULT2 = seg_example2
-SRC2 = $(RESULT).c
+SRC2 = $(RESULT2).c
 Compiler = aarch64-linux-gnu-gcc
 
 all:

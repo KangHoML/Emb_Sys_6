@@ -27,7 +27,7 @@ void init_keyboard()
 
 void close_keyboard()
 {
-	tcsetattr(0, TSCANOW, &init_setting);
+	tcsetattr(0, TCSANOW, &init_setting);
 }
 
 char get_key()
@@ -64,13 +64,13 @@ int main(int argc, char **argv)
 
 	init_keyboard();
 	print_menu();
-	tmp_n=0;
+	tmp_n = 0;
 	delay_time = 1000000;
 
 	data[0] = (seg_num[1] << 4) | D1;
 	data[1] = (seg_num[2] << 4) | D2;
 	data[2] = (seg_num[3] << 4) | D3;
-	data[3] - (seg_num[4] << 4) | D4;
+	data[3] = (seg_num[4] << 4) | D4;
 
 	while(1){
 		key = get_key();
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 	}
 
 	close_keyboard();
-	wrtie(dev, 0x0000, 2);
+	write(dev, 0x0000, 2);
 	close(dev);
 	return 0;
 }

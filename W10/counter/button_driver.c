@@ -28,7 +28,7 @@ static ssize_t driver_read(struct file *File, char *user_buffer, size_t count, l
 	to_copy = min(count, sizeof(tmp));
 
 	/* Read value of button */
-	tmp[0] = gpio_get_value(17) + '0';
+	tmp[0] = gpio_get_value(22) + '0';
     tmp[1] = gpio_get_value(27) + '0';
 
 	/* Copy data to user */
@@ -91,25 +91,25 @@ static int __init ModuleInit(void) {
 		goto AddError;
 	}
 
-    /* GPIO 17 init */
-	if(gpio_request(17, "rpi-gpio-17")) {
-		printk("Can not allocate GPIO 17\n");
+    /* GPIO 22 init */
+	if(gpio_request(22, "rpi-gpio-22")) {
+		printk("Can not allocate GPIO 22\n");
 		goto AddError;
 	}
 
-	/* Set GPIO 17 direction */
-	if(gpio_direction_input(17)) {
-		printk("Can not set GPIO 17 to input!\n");
+	/* Set GPIO 22 direction */
+	if(gpio_direction_input(22)) {
+		printk("Can not set GPIO 22 to input!\n");
 		goto Gpio17Error;
 	}
 
-    /* GPIO 17 init */
+    /* GPIO 27 init */
 	if(gpio_request(27, "rpi-gpio-27")) {
 		printk("Can not allocate GPIO 27\n");
 		goto AddError;
 	}
 
-	/* Set GPIO 17 direction */
+	/* Set GPIO 27 direction */
 	if(gpio_direction_input(27)) {
 		printk("Can not set GPIO 27 to input!\n");
 		goto Gpio27Error;
@@ -118,7 +118,7 @@ static int __init ModuleInit(void) {
     return 0;
 
 Gpio17Error:
-    gpio_free(17);
+    gpio_free(22);
 Gpio27Error:
     gpio_free(27);
 AddError:
@@ -131,7 +131,7 @@ ClassError:
 }
 
 static void __exit ModuleExit(void) {
-    gpio_free(17);
+    gpio_free(22);
     gpio_free(27);
     cdev_del(&my_device);
 	device_destroy(my_class, my_device_nr);

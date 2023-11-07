@@ -1,0 +1,1 @@
+cmd_/home/ho/workspace/Emb_sys/W10/seg_example/modules.order := {   echo /home/ho/workspace/Emb_sys/W10/seg_example/seg_driver.ko; :; } | awk '!x[$$0]++' - > /home/ho/workspace/Emb_sys/W10/seg_example/modules.order

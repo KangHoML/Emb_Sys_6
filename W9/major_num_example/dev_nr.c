@@ -4,9 +4,8 @@
 
 /* Meta Information */
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Johannes 4 GNU/Linux");
+MODULE_AUTHOR("Emb_Sys_6 GNU/Linux");
 MODULE_DESCRIPTION("Registers a device nr. and implement some callback functions");
-
 
 // Open and close device file
 static int driver_open(struct inode *device_file, struct file *instance) {
