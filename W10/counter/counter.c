@@ -110,23 +110,21 @@ int main(int argc, char **argv) {
             case 'p':
                 {
                     unsigned short off_data[4] = {0};
+                    write(seg_dev, off_data, sizeof(off_data));
+
+                    close_keyboard(); // 입력을 위해 기존의 키보드 설정으로 복구
 
                     printf("input of couter value: ");
-                    char keys[4];
-                    int i = 0;
-                    char key;
+                    char input[5] = {0};
+                    fgets(input, 5, stdin);
 
-                    while((key = get_key()) != '\n') {
-                        keys[i] = key;
-                        i++;
-                    }
+                    // 입력 버퍼 비우기
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
                     
-                    count = 0;
-                    for (int j = 0; j < 4; j++) {
-                        count = count * 10 + (keys[j] - '0');
-                    }
+                    count = atoi(input);
 
-                    write(seg_dev, off_data, sizeof(off_data));
+                    init_keyboard(); // 다시 키보드 설정
                     break;
                 }
 
