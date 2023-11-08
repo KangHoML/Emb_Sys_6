@@ -6,6 +6,7 @@
 #include <termios.h>
 
 static struct termios init_setting, new_setting;
+
 char seg_num[10] = {0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xd8, 0x80, 0x90};
 char seg_dnum[10] = {0x40, 0x79, 0x24, 0x30, 0x19, 0x12, 0x02, 0x58, 0x00, 0x10};
 
@@ -62,8 +63,6 @@ void print_seg(unsigned short *data, int count) {
 }
 
 int main(int argc, char **argv) {
-    int state = 1;
-
     // variable values for reading button
     int button_dev = open("/dev/my_button", O_RDONLY);
     char buff[2];
@@ -85,13 +84,17 @@ int main(int argc, char **argv) {
     }
     printf("Openig segment device was successful!\n");
 
-    // initialize the setting
-    init_keyboard();
-    print_menu();
+    // variable values for counter
+    int state = 1;
+    int digit_num = 0;
     unsigned short data[4];
     char command;
     int count = 0;
     int delay_time = 1000;
+
+    // initialize the setting
+    init_keyboard();
+    print_menu();
     
     while(state == 1) {
         command = get_key();
@@ -99,14 +102,34 @@ int main(int argc, char **argv) {
             case 'u':
                 count = (count + 1) % 10000;
                 break;
+
             case 'd':
                 count = (count - 1 + 10000) % 10000;
                 break;
+
             case 'p':
-                printf("input of couter value: ");
-                scanf("%d", &count);
-                count %= 10000;
-                break;
+                {
+                    unsigned short off_data[4] = {0};
+
+                    printf("input of couter value: ");
+                    char keys[4];
+                    int i = 0;
+                    char key;
+
+                    while((key = get_key()) != '\n') {
+                        keys[i] = key;
+                        i++;
+                    }
+                    
+                    count = 0;
+                    for (int j = 0; j < 4; j++) {
+                        count = count * 10 + (keys[j] - '0');
+                    }
+
+                    write(seg_dev, off_data, sizeof(off_data));
+                    break;
+                }
+
             case 'q':
                 state = 0;
                 break;
@@ -129,11 +152,17 @@ int main(int argc, char **argv) {
         prev[1] = buff[1];
 
         print_seg(data, count);
-        write(seg_dev, &data, sizeof(data));
+        write(seg_dev, &data[digit_num], sizeof(data));
         usleep(delay_time);
+        
+        digit_num++;
+        if (digit_num > 3) {
+            digit_num = 0;
+        }
     }
 
     close_keyboard();
+    write(seg_dev, 0x0000, 2);
     close(button_dev);
     close(seg_dev);
     return 0;
