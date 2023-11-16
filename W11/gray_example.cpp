@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 		for(int j =0; j < width; j++){
 			R_val = img.at<Vec3b>(i,j)[2];
 			G_val = img.at<Vec3b>(i,j)[1];
-			B_val = img.at<Vec3b>(i.j)[0];
+			B_val = img.at<Vec3b>(i,j)[0];
 
 			average_gray = (int)((R_val + G_val + B_val) / 3);
 
