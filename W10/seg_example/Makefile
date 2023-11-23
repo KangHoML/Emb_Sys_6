@@ -4,7 +4,7 @@ RESULT = seg_example
 SRC = $(RESULT).c
 RESULT2 = seg_example2
 SRC2 = $(RESULT2).c
-Compiler = aarch64-linux-gnu-gcc
+Compiler = arm-linux-gnueabihf-gcc
 
 all:
 	make -C $(KDIR) M=$(PWD) modules

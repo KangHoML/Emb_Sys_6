@@ -12,8 +12,8 @@ using namespace cv;
 
 int main(int argc, char** argv)
 {
-	int heigh, width;
-	int n_heigh, n_width;
+	int height, width;
+	int n_height, n_width;
 	float R_val, G_val, B_val;
 	float average_gray;
 	Mat img;
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	}
 
 	if(img.empty()){
-		printf("image load error\n")
+		printf("image load error\n");
 		return -1;
 	}
 

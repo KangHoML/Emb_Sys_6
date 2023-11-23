@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     int frame_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
 
     // Define the codec the create VideoWriter object
-    VideoWriter video("outcpp.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 10, Size(frame_width, frame_height))
+    VideoWriter video("sobel_video.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 10, Size(frame_width, frame_height));
 
     // Define the variables for video image process
     int count = 0; int max;
@@ -34,23 +34,23 @@ int main(int argc, char** argv) {
     float average_gray;
     
     Mat img;
-    Mat gray;
-    Mat sobelX, sobelY, sobel;
+    Mat gray(frame_height, frame_width, CV_8UC1);
+    Mat sobelX, sobelY, sobel_gray, sobel_color;
 
     printf("Open Camera!\n");
-    if (arg > 1) {
+    if (argc > 1) {
         max = int(argv[1]);
     }
     else {
         max = 50;
     }
-
+    
     while(count <= max) {
         cap.read(img);
         if (img.empty()) break;
 
-        for(int i = 0; i < frame_width; i++) {
-            for(int j = 0; j < frame_height;j++) {
+        for(int i = 0; i < frame_height; i++) {
+            for(int j = 0; j < frame_width; j++) {
                 r_val = img.at<Vec3b>(i, j)[2];
                 g_val = img.at<Vec3b>(i, j)[1];
                 b_val = img.at<Vec3b>(i, j)[0];
@@ -62,9 +62,10 @@ int main(int argc, char** argv) {
 
         Sobel(gray, sobelX, CV_8U, 1, 0);
         Sobel(gray, sobelY, CV_8U, 0, 1);
-        sobel = abs(sobelX) + abs(sobelY);
+        sobel_gray = abs(sobelX) + abs(sobelY);
 
-        video.write(sobel);
+        cvtColor(sobel_gray, sobel_color, COLOR_GRAY2BGR);
+        video.write(sobel_color);
         count++;
     }
     
