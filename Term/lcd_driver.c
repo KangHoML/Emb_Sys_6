@@ -16,7 +16,7 @@ static dev_t my_device_nr;
 static struct class *my_class;
 static struct cdev my_device;
 
-#define DRIVER_NAME "lcd_display"
+#define DRIVER_NAME "lcd_drvier"
 #define DRIVER_CLASS "LCDModuleClass"
 
 /* LCD char buffer */
@@ -89,9 +89,14 @@ static ssize_t driver_write(struct file *File, const char *user_buffer, size_t c
     /* Calculate data */
 	delta = to_copy - not_copied;
 
-    /* Set the new data to the display */
-    lcd_send(0x01, 1) // Clear the LCD Display
+	/* Clear the LCD Display */
+	if (strcmp(user_buffer, "CLEAR_LCD") == 0) {
+        lcd_send(0x01, 1); // Clear the LCD Display
+        return strlen("CLEAR_LCD");
+    }
 
+	/* Set the new data to the display */	
+	lcd_send(0x01, 1); // Clear the LCD Display
     for (int i = 0; i < to_copy; i++) {
         lcd_send(lcd_buffer[i], 0); // send characters to the LCD Display
     }
