@@ -1,3 +1,11 @@
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/cdev.h>
+#include <linux/uaccess.h>
+#include <linux/gpio.h>
+#include <linux/delay.h>
+
 /* Meta Information */
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("EMB_SYS_6/Linux");

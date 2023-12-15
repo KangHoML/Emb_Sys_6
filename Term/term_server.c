@@ -10,6 +10,8 @@
 * keyboard 또는 button을 통해 모터를 제어할 수 있도록 설계
 */
 
+static struct termios init_setting, new_setting;
+
 void init_keyboard()
 {
 	tcgetattr(STDIN_FILENO, &init_setting);
@@ -43,18 +45,59 @@ void print_menu()
 	printf("------------------------\n\n");
 }
 
+void led_controll(int led_dev, int flag) {
+	char data;
+	if (flag == 3) {
+		data = '1';
+	}
+	else {
+		data = '0';
+	}
+	write(led_dev, &data, 1);
+}
+
+void servo_controll(int servo_dev) {
+    char servo_buffer;
+    
+	servo_buffer = 'X'; // degree : 90
+	write(servo_dev, &servo_buffer, 1);
+
+	sleep(5);
+
+	servo_buffer = 'Y'; // degree : 0
+	write(servo_dev, &servo_buffer, 1);   
+}
+
 int main(int argc, char **argv) {
     int flag = 0;
-    
-    if (flag == 3) {
-        int led_dev = open("dev/led_driver", O_WRONLY);
-        if(led_dev == -1) {
-            printf("Opening led device was not possible!\n");
-            return -1;
-        }
-        printf("Openig led device was successful!\n");
+    char command;
 
-        write(led_dev, '1', 1);
+	int led_dev = open("dev/led_driver", O_WRONLY);
+    if(led_dev == -1) {
+		printf("Opening led device was not possible!\n");
+		return -1;
+	}
+	printf("Openig led device was successful!\n");
+
+	int servo_dev = open("dev/pwm_driver", O_WRONLY);
+    if (servo_dev == -1) {
+        printf("Opening pwm device was not possible!\n");
     }
+    printf("Openig pwm device was successful!\n");
 
+	while(1) {
+		led_controll(led_dev, flag);
+
+		if (flag == 3) {
+			init_keyboard();
+			print_menu();
+
+			command = get_key();
+			if (command == 'o') {
+				servo_controll(servo_dev);
+			}
+
+			close_keyboard();
+		}
+	}
 }
