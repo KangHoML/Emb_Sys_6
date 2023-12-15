@@ -1,7 +1,7 @@
 obj-m += led_driver.o
 obj-m += lcd_driver.o
 obj-m += pwm_driver.o
-KDIR = ~/workspace/kernel
+KDIR = ~/kernel
 
 RESULT1 = term_server
 SRC1 = $(RESULT1).c
